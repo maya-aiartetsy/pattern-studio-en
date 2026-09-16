@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<!-- Atelier Repeat — seamless pattern studio
+     Created by digitaldreambyM. Personal use only; redistribution and resale are not permitted. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atelier Repeat — Seamless Pattern Studio</title>
+<style>
+  :root{
+    --porcelain:#FFFBFC;
+    --blush:#F1DDE4;
+    --blush-deep:#E7CDD7;
+    --petal:#FBEFF3;
+    --rule:#E8D0D9;
+    --rule-soft:#F2E1E7;
+    --ink:#37232C;
+    --ink-soft:#8A6875;
+    --rose:#B85572;
+    --rose-deep:#96405A;
+    --gold:#C4A264;
+    --r-lg:14px;
+    --r-md:9px;
+    --shadow-panel:0 1px 1px rgba(55,35,44,.04), 0 14px 34px -18px rgba(55,35,44,.34);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--blush);color:var(--ink);
+    font-family:system-ui,-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic UI",sans-serif;
+    font-size:13.5px;line-height:1.65;-webkit-font-smoothing:antialiased;
+    -webkit-tap-highlight-color:transparent;
+  }
+  canvas{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  .btn,.seg button{touch-action:manipulation}
+  .display{font-family:"Didot","Bodoni MT","Hiragino Mincho ProN","Yu Mincho",Georgia,serif;font-weight:500}
+  h1,h2,h3{margin:0;font-weight:500}
+  button{font:inherit;color:inherit}
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    background:var(--porcelain);border-bottom:1px solid var(--rule);
+    padding:16px 26px 14px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;position:relative;
+  }
+  .masthead::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,var(--gold),rgba(196,162,100,0) 62%)}
+  .masthead h1{font-size:27px;letter-spacing:.05em;line-height:1.1}
+  .masthead .by{display:inline-block;margin:7px 0 0;font-size:11.5px;letter-spacing:.14em;color:var(--rose);
+    border-top:1px solid var(--gold);padding-top:6px}
+  .masthead .sub{color:var(--ink-soft);font-size:12px;margin:8px 0 0;letter-spacing:.02em}
+
+  .layout{display:grid;grid-template-columns:270px minmax(0,1fr) 300px;gap:18px;padding:18px 22px 40px;align-items:start}
+  .rail{display:flex;flex-direction:column;gap:16px;position:sticky;top:18px}
+
+  .workbench{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+  .workbench .panel{display:flex;flex-direction:column}
+  .workbench .stage{flex:1}
+
+  .panel{background:var(--porcelain);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow-panel);overflow:hidden}
+  .panel > header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid var(--rule-soft)}
+  .panel > header h2{font-size:15.5px;letter-spacing:.05em}
+  .panel > .body{padding:16px}
+  .hint{color:var(--ink-soft);font-size:11.5px;margin:0}
+  .tag{color:var(--ink-soft);font-size:11.5px;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px}
+
+  /* ---------- controls ---------- */
+  .btn{border:1px solid var(--rule);background:#fff;border-radius:var(--r-md);padding:7px 12px;cursor:pointer;
+       transition:background .14s,border-color .14s,color .14s}
+  .btn:hover{background:var(--petal);border-color:var(--rose)}
+  .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.38;cursor:not-allowed;transform:none;background:#fff;border-color:var(--rule)}
+  .btn.primary{background:var(--rose);border-color:var(--rose);color:#fff;border-radius:999px;padding:10px 16px;letter-spacing:.04em;
+               box-shadow:0 6px 16px -8px rgba(150,64,90,.8)}
+  .btn.primary:hover{background:var(--rose-deep);border-color:var(--rose-deep)}
+  .btn.quiet{background:transparent}
+  .btn.danger{color:var(--rose-deep);border-color:#E9CBD3}
+  .btn.danger:hover{background:#FBEAEF}
+  .btn.block{width:100%;display:block;text-align:center}
+  .btn.mini{padding:5px 9px;font-size:12px}
+  .btn:focus-visible,input:focus-visible,select:focus-visible,.drop:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap}
+  .btn-row .btn{flex:1 1 auto}
+
+  label.field{display:block;margin-bottom:14px}
+  label.field:last-child{margin-bottom:0}
+  label.field > span{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11.5px;color:var(--ink-soft);margin-bottom:6px}
+  label.field b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;font-size:12px}
+  select{width:100%;padding:7px 9px;border:1px solid var(--rule);border-radius:var(--r-md);background:#fff;font:inherit}
+  input[type=range]{width:100%;accent-color:var(--rose);margin:0}
+  input[type=color]{width:46px;height:32px;padding:2px;border:1px solid var(--rule);border-radius:var(--r-md);background:#fff}
+  .inline{display:flex;align-items:center;gap:10px}
+  .switch{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12.5px;accent-color:var(--rose);color:var(--ink-soft)}
+  .seg{display:flex;border:1px solid var(--rule);border-radius:var(--r-md);overflow:hidden;background:#fff}
+  .seg button{flex:1;border:0;background:transparent;padding:7px 4px;cursor:pointer;font-size:12px;letter-spacing:.02em}
+  .seg button + button{border-left:1px solid var(--rule-soft)}
+  .seg button[aria-pressed=true]{background:var(--rose);color:#fff}
+
+  /* ---------- library ---------- */
+  .drop{border:1.5px dashed var(--rule);border-radius:var(--r-lg);padding:18px 12px;text-align:center;cursor:pointer;background:#fff}
+  .drop:hover,.drop.over{border-color:var(--rose);background:var(--petal)}
+  .drop strong{display:block;font-size:13px;font-weight:600;margin-bottom:3px}
+  .lib{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .lib li{position:relative}
+  .lib button.thumb{width:100%;aspect-ratio:1;padding:5px;cursor:pointer;border:1px solid var(--rule);border-radius:10px;display:grid;place-items:center;
+    background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='8' height='8' fill='%23F7EDF1'/><rect x='8' y='8' width='8' height='8' fill='%23F7EDF1'/></svg>")}
+  .lib button.thumb:hover{border-color:var(--rose)}
+  .lib img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+  .lib .kill{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:1px solid var(--rule);
+    background:#fff;color:var(--ink-soft);font-size:12px;line-height:1;cursor:pointer;display:none;padding:0}
+  .lib li:hover .kill,.lib .kill:focus-visible{display:block}
+
+  /* ---------- stage ---------- */
+  .stagebar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:11px 14px;border-bottom:1px solid var(--rule-soft)}
+  .stagebar .btn-row{flex:0 1 auto}
+  .stage{background:var(--blush-deep);padding:12px;display:grid;place-items:center;box-shadow:inset 0 2px 10px rgba(90,48,64,.16)}
+  canvas#tile,canvas#preview{touch-action:none;display:block;max-width:100%}
+  .canvas-stack{position:relative;line-height:0}
+  canvas#overlay{position:absolute;left:0;top:0;pointer-events:none;max-width:100%}
+  canvas#preview{border-radius:2px}
+  .status{padding:11px 14px;border-top:1px solid var(--rule-soft);color:var(--ink-soft);font-size:12px;min-height:40px}
+
+  /* ---------- inspector ---------- */
+  .group{padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--rule-soft)}
+  .group:last-of-type{padding-bottom:0;margin-bottom:0;border-bottom:0}
+  .group h3{font-size:13px;letter-spacing:.06em;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .group h3 button{border:0;background:none;color:var(--ink-soft);font-size:11.5px;cursor:pointer;padding:2px 4px;text-decoration:underline;text-underline-offset:3px}
+  .group h3 button:hover{color:var(--rose)}
+  .empty{color:var(--ink-soft);font-size:12.5px;margin:0}
+  .readout{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-soft);padding-top:14px;border-top:1px solid var(--rule-soft);margin-top:14px}
+  .readout b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+
+  @media (max-width:1400px){ .workbench{grid-template-columns:1fr} }
+  @media (max-width:1220px){ .layout{grid-template-columns:1fr;padding:14px} .rail{position:static} }
+  /* tablets: rails stack, but the canvas and its preview stay side by side */
+  @media (max-width:1220px) and (min-width:760px){ .workbench{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div>
+    <h1 class="display">Atelier Repeat</h1>
+    <p class="by">digitaldreambyM</p>
+    <p class="sub">Place your motifs and drag them over the edges. They stay connected on the opposite side, and the whole thing saves as one repeating tile.</p>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- ================= LEFT ================= -->
+  <div class="rail">
+    <section class="panel">
+      <header><h2 class="display">Motifs</h2><span class="tag" id="libCount">0 files</span></header>
+      <div class="body">
+        <div class="drop" id="drop" tabindex="0" role="button">
+          <strong>Add images</strong>
+          <span class="hint">Transparent PNG works best. Drag and drop is fine too.</span>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+        <ul class="lib" id="lib"></ul>
+        <p class="hint" style="margin-top:11px">Tap a thumbnail to place another copy on the canvas.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header><h2 class="display">Canvas</h2></header>
+      <div class="body">
+        <label class="field">
+          <span>Tile resolution</span>
+          <select id="tileSize">
+            <option value="1500">1500 px — 5 in / 12.7 cm at 300 DPI</option>
+            <option value="2000">2000 px — 6.7 in / 16.9 cm at 300 DPI</option>
+            <option value="3000" selected>3000 px — 10 in / 25.4 cm at 300 DPI</option>
+            <option value="4000">4000 px — 13.3 in / 33.9 cm at 300 DPI</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Units</span>
+          <div class="seg" id="unitPick">
+            <button type="button" data-u="in" aria-pressed="true">inches</button>
+            <button type="button" data-u="cm" aria-pressed="false">cm</button>
+          </div>
+        </label>
+        <label class="field">
+          <span>Repeat layout</span>
+          <div class="seg" id="repeatMode">
+            <button type="button" data-mode="grid" aria-pressed="true">Grid</button>
+            <button type="button" data-mode="halfdrop" aria-pressed="false">Half-drop</button>
+            <button type="button" data-mode="brick" aria-pressed="false">Brick</button>
+          </div>
+        </label>
+        <p class="hint" id="modeNote" style="margin:-8px 0 14px">Straight rows and columns. The most basic repeat.</p>
+        <label class="field">
+          <span>Background</span>
+          <div class="inline">
+            <input type="color" id="bgColor" value="#FFFFFF" aria-label="Background color">
+            <label class="switch"><input type="checkbox" id="bgTransparent"> Transparent</label>
+          </div>
+        </label>
+        <label class="field">
+          <span>Underlay (a reference image to arrange over)</span>
+          <div class="btn-row">
+            <button class="btn" id="tplAdd">Choose image</button>
+            <button class="btn" id="tplClear" disabled>Remove</button>
+          </div>
+          <input type="file" id="tplInput" accept="image/*" hidden>
+        </label>
+        <label class="field" id="tplOpacityField" hidden>
+          <span>Underlay strength <b id="tplOpacityVal">40%</b></span>
+          <input type="range" id="tplOpacity" min="5" max="100" value="40">
+        </label>
+        <p class="hint">The underlay never appears in the preview or in the exported file.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= CENTER ================= -->
+  <div class="workbench">
+    <section class="panel">
+      <div class="stagebar">
+        <div class="btn-row">
+          <button class="btn mini" id="undo" disabled>Undo</button>
+          <button class="btn mini" id="scatter">Scatter</button>
+          <button class="btn mini danger" id="clearAll">Clear all</button>
+        </div>
+        <div style="display:flex;gap:12px">
+          <label class="switch"><input type="checkbox" id="guides" checked> Guides</label>
+          <label class="switch"><input type="checkbox" id="perf"> Meter</label>
+        </div>
+      </div>
+      <div class="stage" id="stage">
+        <div class="canvas-stack">
+          <canvas id="tile" width="600" height="600"></canvas>
+          <canvas id="overlay" width="600" height="600"></canvas>
+        </div>
+      </div>
+      <p class="status" id="status">Start by adding a motif from the panel on the left.</p>
+    </section>
+
+    <section class="panel">
+      <div class="stagebar">
+        <span class="tag" id="previewLabel">Tiled as a grid</span>
+        <div class="seg" style="width:104px">
+          <button type="button" data-rep="2" aria-pressed="true">2×2</button>
+          <button type="button" data-rep="3" aria-pressed="false">3×3</button>
+        </div>
+      </div>
+      <div class="stage" id="previewStage"><canvas id="preview" width="480" height="480"></canvas></div>
+      <p class="status" id="previewNote">This is the tile repeated. Check here for any visible seam.</p>
+    </section>
+  </div>
+
+  <!-- ================= RIGHT ================= -->
+  <div class="rail">
+    <section class="panel">
+      <header><h2 class="display">Selected motif</h2><span class="tag" id="selName"></span></header>
+      <div class="body">
+        <p class="empty" id="inspEmpty">Select a motif on the canvas to adjust its position, shape and color here.</p>
+
+        <div id="inspBody" hidden>
+          <div class="group">
+            <h3 class="display">Position<button type="button" id="toCenter">Center it</button></h3>
+            <label class="field"><span>Across <b id="posXVal">50.0%</b></span><input type="range" id="posX" min="0" max="100" step="0.1" value="50"></label>
+            <label class="field"><span>Down <b id="posYVal">50.0%</b></span><input type="range" id="posY" min="0" max="100" step="0.1" value="50"></label>
+          </div>
+
+          <div class="group">
+            <h3 class="display">Shape<button type="button" id="resetShape">Reset</button></h3>
+            <label class="field"><span>Size <b id="szVal">100%</b></span><input type="range" id="sz" min="3" max="250" value="100"></label>
+            <label class="field"><span>Angle <b id="rotVal">0°</b></span><input type="range" id="rotR" min="-180" max="180" value="0"></label>
+            <label class="field"><span>Slant across <b id="skxVal">0°</b></span><input type="range" id="skx" min="-60" max="60" value="0"></label>
+            <label class="field"><span>Slant down <b id="skyVal">0°</b></span><input type="range" id="sky" min="-60" max="60" value="0"></label>
+            <div class="btn-row">
+              <button class="btn" id="flipX">Flip across</button>
+              <button class="btn" id="flipY">Flip down</button>
+            </div>
+          </div>
+
+          <div class="group">
+            <h3 class="display">Color<button type="button" id="resetColor">Reset</button></h3>
+            <label class="field"><span>Hue <b id="hueVal">0°</b></span><input type="range" id="hue" min="-180" max="180" value="0"></label>
+            <label class="field"><span>Saturation <b id="satVal">100%</b></span><input type="range" id="sat" min="0" max="220" value="100"></label>
+            <label class="field"><span>Brightness <b id="briVal">100%</b></span><input type="range" id="bri" min="30" max="180" value="100"></label>
+            <label class="field"><span>Opacity <b id="alphaVal">100%</b></span><input type="range" id="alpha" min="10" max="100" value="100"></label>
+            <p class="hint" id="filterNote" hidden style="margin-top:10px">This browser cannot adjust hue, saturation or brightness. Opacity still works.</p>
+          </div>
+
+          <div class="group">
+            <h3 class="display">Stacking and copies</h3>
+            <div class="btn-row" style="margin-bottom:9px">
+              <button class="btn" id="front">Bring to front</button>
+              <button class="btn" id="back">Send to back</button>
+            </div>
+            <div class="btn-row">
+              <button class="btn" id="dupe">Duplicate</button>
+              <button class="btn danger" id="del">Delete</button>
+            </div>
+          </div>
+
+          <div class="readout"><span>Print size at 300 DPI</span><b id="sizeCm">–</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header><h2 class="display">Export</h2><span class="tag" id="canvasMeta">3000 × 3000 px</span></header>
+      <div class="body">
+        <label class="field">
+          <span>What to export</span>
+          <div class="seg" id="exportUnit">
+            <button type="button" data-unit="tile" aria-pressed="true">Single tile</button>
+            <button type="button" data-unit="grid" aria-pressed="false">Expanded for grid</button>
+          </div>
+        </label>
+        <label class="field">
+          <span>File type</span>
+          <div class="seg">
+            <button type="button" data-fmt="png" aria-pressed="true">PNG</button>
+            <button type="button" data-fmt="jpeg" aria-pressed="false">JPEG</button>
+          </div>
+        </label>
+        <button class="btn primary block" id="exportBtn">Save the tile</button>
+        <p class="hint" id="exportNote" style="margin-top:10px">Saves as one tile. Lay it out in a plain grid and no seam will show.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var PAD = 42, MIN_MOTIF = 20, DPI = 300;
+
+var state = {
+  tile:3000, bg:"#FFFFFF", transparent:false, mode:"grid",
+  motifs:[], sel:null, template:null, tplOpacity:.4,
+  repeat:2, format:"png", unit:"tile", units:"in", guides:true
+};
+var library = [], uid = 1, history = [];
+
+function $(id){ return document.getElementById(id); }
+
+var cv = $("tile"), ctx = cv.getContext("2d");
+var ov = $("overlay"), octx = ov.getContext("2d");
+var pv = $("preview"), pctx = pv.getContext("2d");
+var view = { css:600, size:512, scale:.17, dpr:1 };
+var snapLine = { x:null, y:null };
+var drag = null, pending = false;
+
+// touch screens need bigger targets, and older Safari has no canvas filter
+var COARSE = window.matchMedia ? window.matchMedia("(pointer: coarse)").matches : false;
+var GRAB = COARSE ? 26 : 11;          // how close a tap must be to grab a handle
+var HANDLE = COARSE ? 8.5 : 5.5;      // drawn handle radius
+var ROT_OFF = COARSE ? 40 : 26;       // distance of the rotation handle
+var FILTER_OK = (function(){
+  try { return typeof document.createElement("canvas").getContext("2d").filter === "string"; }
+  catch(err){ return false; }
+})();
+
+function say(t){ $("status").textContent = t; }
+function lenNum(px){
+  var v = state.units==="in" ? px/DPI : px/DPI*2.54;
+  return String(parseFloat(v.toFixed(state.units==="in" ? 2 : 1)));
+}
+function unitName(){ return state.units==="in" ? "in" : "cm"; }
+function byId(id){ for (var i=0;i<state.motifs.length;i++) if (state.motifs[i].id===id) return state.motifs[i]; return null; }
+function sel(){ return state.sel==null ? null : byId(state.sel); }
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+var checker=null;
+function checkerPattern(g){
+  if (checker) return checker;
+  var c=document.createElement("canvas"); c.width=c.height=16;
+  var x=c.getContext("2d");
+  x.fillStyle="#FFFFFF"; x.fillRect(0,0,16,16);
+  x.fillStyle="#F6E9EE"; x.fillRect(0,0,8,8); x.fillRect(8,8,8,8);
+  checker=g.createPattern(c,"repeat"); return checker;
+}
+
+/* ---------- repeat geometry ---------- */
+var _nb=null, _nbKey="";
+function neighbors(){
+  var key=state.tile+"|"+state.mode;
+  if (_nbKey===key) return _nb;
+  var T=state.tile, out=[];
+  for (var i=-1;i<=1;i++) for (var j=-1;j<=1;j++){
+    out.push([ i*T + (state.mode==="brick" ? j*T/2 : 0),
+               j*T + (state.mode==="halfdrop" ? i*T/2 : 0) ]);
+  }
+  _nb=out; _nbKey=key; return out;
+}
+function wrapPoint(x,y){
+  var T=state.tile, k;
+  if (state.mode==="halfdrop"){
+    k=Math.floor(x/T); x-=k*T; y-=k*T/2; y=((y%T)+T)%T;
+  } else if (state.mode==="brick"){
+    k=Math.floor(y/T); y-=k*T; x-=k*T/2; x=((x%T)+T)%T;
+  } else {
+    x=((x%T)+T)%T; y=((y%T)+T)%T;
+  }
+  return {x:x,y:y};
+}
+
+/* ---------- motif transform (plain maths, cached per motif) ---------- */
+function coreOf(m){
+  var key = m.rot+"|"+m.skx+"|"+m.sky+"|"+(m.fx?1:0)+"|"+(m.fy?1:0);
+  if (m._tkey === key) return m._t;
+  var cos=Math.cos(m.rot), sin=Math.sin(m.rot);
+  var tx=Math.tan(m.skx), ty=Math.tan(m.sky);
+  var sx=m.fx?-1:1, sy=m.fy?-1:1;
+  var t = {
+    a:(cos - sin*ty)*sx,
+    b:(sin + cos*ty)*sx,
+    c:(cos*tx - sin)*sy,
+    d:(sin*tx + cos)*sy
+  };
+  t.ex = (Math.abs(t.a)*m.w + Math.abs(t.c)*m.h)/2;
+  t.ey = (Math.abs(t.b)*m.w + Math.abs(t.d)*m.h)/2;
+  t.w = m.w; t.h = m.h;
+  m._t=t; m._tkey=key; return t;
+}
+function extentsOf(m){
+  var t=coreOf(m);
+  if (t.w!==m.w || t.h!==m.h){
+    t.ex=(Math.abs(t.a)*m.w + Math.abs(t.c)*m.h)/2;
+    t.ey=(Math.abs(t.b)*m.w + Math.abs(t.d)*m.h)/2;
+    t.w=m.w; t.h=m.h;
+  }
+  return t;
+}
+function hitMotif(m, px, py){
+  var t=extentsOf(m), ns=neighbors(), det=t.a*t.d - t.b*t.c;
+  if (!det) return false;
+  for (var i=0;i<ns.length;i++){
+    var dx=px-(m.x+ns[i][0]), dy=py-(m.y+ns[i][1]);
+    if (Math.abs(dx)>t.ex || Math.abs(dy)>t.ey) continue;
+    var lx=( t.d*dx - t.c*dy)/det, ly=(-t.b*dx + t.a*dy)/det;
+    if (Math.abs(lx) <= m.w/2 && Math.abs(ly) <= m.h/2) return true;
+  }
+  return false;
+}
+function cornersOf(m){
+  var t=coreOf(m), hw=m.w/2, hh=m.h/2, pts=[[-hw,-hh],[hw,-hh],[hw,hh],[-hw,hh]], out=[];
+  for (var i=0;i<4;i++)
+    out.push({ x:m.x + t.a*pts[i][0] + t.c*pts[i][1], y:m.y + t.b*pts[i][0] + t.d*pts[i][1] });
+  return out;
+}
+function handlesOf(m, sc){
+  var c=cornersOf(m), t=coreOf(m), ly=-m.h/2 - ROT_OFF/sc;
+  return [{k:"nw",p:c[0]},{k:"ne",p:c[1]},{k:"se",p:c[2]},{k:"sw",p:c[3]},
+          {k:"rot",p:{x:m.x + t.c*ly, y:m.y + t.d*ly}}];
+}
+
+/* ---------- source images ---------- */
+// works for both <img> and <canvas> sources
+function IW(x){ return x.naturalWidth || x.width; }
+function IH(x){ return x.naturalHeight || x.height; }
+
+// a 3000px clipart PNG costs ~36MB of decoded memory and Safari re-samples it
+// on every draw, so shrink oversized art once on import and keep only that
+var MAX_SRC = 2048;
+function prepareSource(img){
+  var w=IW(img), h=IH(img), big=Math.max(w,h);
+  if (big<=MAX_SRC) return img;
+  var k=MAX_SRC/big;
+  var c=document.createElement("canvas");
+  c.width=Math.round(w*k); c.height=Math.round(h*k);
+  var g=c.getContext("2d");
+  g.imageSmoothingQuality="high";
+  g.drawImage(img,0,0,c.width,c.height);
+  return c;
+}
+function makeThumb(src){
+  var w=IW(src), h=IH(src), k=Math.min(1, 160/Math.max(w,h));
+  var c=document.createElement("canvas");
+  c.width=Math.max(1,Math.round(w*k)); c.height=Math.max(1,Math.round(h*k));
+  c.getContext("2d").drawImage(src,0,0,c.width,c.height);
+  return c.toDataURL("image/png");
+}
+
+/* ---------- bitmap caches ---------- */
+function tinted(m){
+  var key = m.hue + "|" + m.sat + "|" + m.bri;
+  if (m._key === key && m._cache) return m._cache;
+  if (m.hue===0 && m.sat===100 && m.bri===100){ m._cache=m.img; m._key=key; return m.img; }
+  var w=IW(m.img), h=IH(m.img);
+  var k=Math.min(1, 1600/Math.max(w,h));
+  var c=document.createElement("canvas");
+  c.width=Math.max(1,Math.round(w*k)); c.height=Math.max(1,Math.round(h*k));
+  var g=c.getContext("2d");
+  g.filter="hue-rotate("+m.hue+"deg) saturate("+m.sat+"%) brightness("+m.bri+"%)";
+  g.drawImage(m.img,0,0,c.width,c.height);
+  m._cache=c; m._key=key; return c;
+}
+// a pre-shrunk copy near the size actually shown on screen, so the
+// browser is not rescaling a 2000px source on every frame
+function bitmapFor(m, devW){
+  var src = tinted(m);
+  var sw = src.naturalWidth || src.width;
+  if (!(devW>0) || devW >= sw*0.7) return src;
+  var bucket = Math.pow(2, Math.ceil(Math.log(Math.max(48, devW))/Math.LN2));
+  if (bucket >= sw) return src;
+  // keep one copy per size in use: the canvas and the preview draw at
+  // different scales, and a single slot made them rebuild each other's
+  if (!m._mips || m._mipColor !== m._key){ m._mips={}; m._mipColor=m._key; }
+  if (m._mips[bucket]) return m._mips[bucket];
+  var sh = src.naturalHeight || src.height;
+  var c=document.createElement("canvas");
+  c.width=bucket; c.height=Math.max(1, Math.round(bucket*sh/sw));
+  var g=c.getContext("2d");
+  g.imageSmoothingQuality="high";
+  g.drawImage(src,0,0,c.width,c.height);
+  m._mips[bucket]=c;
+  return c;
+}
+
+/* ---------- painting ---------- */
+// opts: k (device scale), checker, template, skipBg, exclude, only
+function paintTile(g, sc, X, Y, opts){
+  var k = opts.k || 1, T = state.tile, S = T*sc, ns = neighbors();
+  g.save();
+  g.setTransform(k,0,0,k,0,0);
+  g.beginPath(); g.rect(X,Y,S,S); g.clip();
+  if (!opts.skipBg){
+    if (state.transparent){
+      if (opts.checker){ g.fillStyle=checkerPattern(g); g.fillRect(X,Y,S,S); }
+      else g.clearRect(X,Y,S,S);
+    } else { g.fillStyle=state.bg; g.fillRect(X,Y,S,S); }
+    if (opts.template && state.template){
+      g.globalAlpha=state.tplOpacity; g.drawImage(state.template,X,Y,S,S); g.globalAlpha=1;
+    }
+  }
+  for (var i=0;i<state.motifs.length;i++){
+    var m=state.motifs[i];
+    if (opts.exclude===m) continue;
+    if (opts.only && opts.only!==m) continue;
+    var t=extentsOf(m);
+    var bmp=bitmapFor(m, Math.abs(m.w*sc*k));
+    var a=t.a*sc*k, b=t.b*sc*k, c=t.c*sc*k, d=t.d*sc*k;
+    g.globalAlpha=m.alpha;
+    for (var j=0;j<ns.length;j++){
+      var cx=m.x+ns[j][0], cy=m.y+ns[j][1];
+      // skip copies that fall completely outside the tile
+      if (cx+t.ex<0 || cx-t.ex>T || cy+t.ey<0 || cy-t.ey>T) continue;
+      g.setTransform(a,b,c,d, (X+cx*sc)*k, (Y+cy*sc)*k);
+      g.drawImage(bmp, -m.w/2, -m.h/2, m.w, m.h);
+    }
+  }
+  g.globalAlpha=1;
+  g.restore();
+}
+
+/* ---------- two layers ----------
+   base canvas   : background, guides, ruler and every motif that is not moving.
+   overlay canvas: only the motif being moved, plus snap lines and handles.
+   While a gesture is running the base is never touched, and the overlay is
+   cleared only over the small area it actually painted last frame.        */
+var hotId=null, baseDirty=true, inspDirty=false, frameQueued=false, prevBox=null;
+
+function buildLayer(m){ hotId = m ? m.id : null; baseDirty=true; }
+function dropLayer(){ hotId=null; baseDirty=true; }
+function render(){ baseDirty=true; invalidate(); }
+function invalidate(){
+  if (frameQueued) return;
+  frameQueued=true;
+  requestAnimationFrame(frame);
+}
+var perfOn=false, perfAcc=0, perfN=0, perfAt=0;
+function frame(){
+  frameQueued=false;
+  var t0 = perfOn ? performance.now() : 0;
+  if (baseDirty){ baseDirty=false; renderBase(); }
+  renderOverlay();
+  if (inspDirty){ inspDirty=false; syncInspector(); }
+  if (perfOn){
+    perfAcc += performance.now()-t0; perfN++;
+    var now=performance.now();
+    if (now-perfAt > 400){
+      perfAt=now;
+      var big=0;
+      state.motifs.forEach(function(m){ big=Math.max(big, IW(m.img)); });
+      say("frame " + (perfAcc/perfN).toFixed(1) + " ms / " + state.motifs.length +
+          " motifs / source max " + big + "px / canvas " + cv.width + "px");
+      perfAcc=0; perfN=0;
+    }
+  }
+}
+
+function fitCanvas(){
+  var avail = Math.max(240, $("stage").clientWidth - 24);
+  var css = Math.min(avail, 640);
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  [cv, ov].forEach(function(c){
+    c.style.width=css+"px"; c.style.height=css+"px";
+    c.width=Math.round(css*dpr); c.height=Math.round(css*dpr);
+  });
+  view.dpr=dpr; view.css=css; view.size=css-PAD*2; view.scale=view.size/state.tile;
+  prevBox=null; baseDirty=true; frame();
+}
+
+function renderBase(){
+  var d=view.dpr, css=view.css, sc=view.scale;
+  ctx.setTransform(d,0,0,d,0,0);
+  ctx.clearRect(0,0,css,css);
+  drawShadow(ctx);
+  paintTile(ctx, sc, PAD, PAD,
+            {checker:true, template:true, k:d, exclude: hotId!=null ? byId(hotId) : null});
+  drawStaticGuides(ctx); drawBorder(ctx); drawRuler(ctx);
+  schedulePreview();
+}
+
+function renderOverlay(){
+  var d=view.dpr, css=view.css, sc=view.scale, i;
+  octx.setTransform(d,0,0,d,0,0);
+  var hot = hotId!=null ? byId(hotId) : null;
+  var m = sel();
+  var B=null;
+  function add(x0,y0,x1,y1){
+    if (!B){ B={x0:x0,y0:y0,x1:x1,y1:y1}; return; }
+    if (x0<B.x0) B.x0=x0; if (y0<B.y0) B.y0=y0;
+    if (x1>B.x1) B.x1=x1; if (y1>B.y1) B.y1=y1;
+  }
+
+  /* 1. work out the area this frame will touch */
+  if (hot){
+    var t=extentsOf(hot), ns=neighbors(), T=state.tile;
+    for (i=0;i<ns.length;i++){
+      var cx=hot.x+ns[i][0], cy=hot.y+ns[i][1];
+      if (cx+t.ex<0 || cx-t.ex>T || cy+t.ey<0 || cy-t.ey>T) continue;
+      add(PAD+(cx-t.ex)*sc, PAD+(cy-t.ey)*sc, PAD+(cx+t.ex)*sc, PAD+(cy+t.ey)*sc);
+    }
+  }
+  if (snapLine.x!=null) add(PAD+snapLine.x*sc-1, PAD, PAD+snapLine.x*sc+1, PAD+view.size);
+  if (snapLine.y!=null) add(PAD, PAD+snapLine.y*sc-1, PAD+view.size, PAD+snapLine.y*sc+1);
+  var tag=null;
+  if (m){
+    var cs=cornersOf(m), hs=handlesOf(m, sc);
+    for (i=0;i<4;i++) add(PAD+cs[i].x*sc, PAD+cs[i].y*sc, PAD+cs[i].x*sc, PAD+cs[i].y*sc);
+    for (i=0;i<hs.length;i++){
+      var hx=PAD+hs[i].p.x*sc, hy=PAD+hs[i].p.y*sc;
+      add(hx-HANDLE-2, hy-HANDLE-2, hx+HANDLE+2, hy+HANDLE+2);
+    }
+    add(PAD+m.x*sc-8, PAD+m.y*sc-8, PAD+m.x*sc+8, PAD+m.y*sc+8);
+    tag=tagBox(m, sc);
+    add(tag.x-1, tag.y-1, tag.x+tag.w+1, tag.y+tag.h+1);
+  }
+
+  /* 2. clear last frame's area plus this one, nothing more */
+  var C=B;
+  if (prevBox){
+    C = C ? { x0:Math.min(C.x0,prevBox.x0), y0:Math.min(C.y0,prevBox.y0),
+              x1:Math.max(C.x1,prevBox.x1), y1:Math.max(C.y1,prevBox.y1) } : prevBox;
+  }
+  if (C){
+    var x0=Math.max(0,Math.floor(C.x0-2)), y0=Math.max(0,Math.floor(C.y0-2));
+    var x1=Math.min(css,Math.ceil(C.x1+2)), y1=Math.min(css,Math.ceil(C.y1+2));
+    if (x1>x0 && y1>y0) octx.clearRect(x0,y0,x1-x0,y1-y0);
+  }
+  prevBox=B;
+
+  /* 3. paint */
+  if (hot) paintTile(octx, sc, PAD, PAD, {skipBg:true, only:hot, k:d});
+  drawSnapLines(octx);
+  if (m){ drawSelection(octx, m, sc); drawPositionTag(octx, m, tag); }
+}
+
+function drawShadow(g){
+  g.fillStyle="rgba(90,48,64,.20)";
+  g.fillRect(PAD+3, PAD+5, view.size, view.size);
+}
+function drawBorder(g){
+  g.strokeStyle="rgba(150,64,90,.45)"; g.lineWidth=1;
+  g.strokeRect(PAD+.5, PAD+.5, view.size-1, view.size-1);
+}
+function drawStaticGuides(g){
+  if (!state.guides) return;
+  var S=view.size;
+  g.save();
+  g.beginPath(); g.rect(PAD,PAD,S,S); g.clip();
+  g.setLineDash([5,6]); g.lineWidth=1;
+  g.strokeStyle="rgba(150,64,90,.16)";
+  [1/3, 2/3].forEach(function(f){
+    g.beginPath(); g.moveTo(PAD+S*f, PAD); g.lineTo(PAD+S*f, PAD+S); g.stroke();
+    g.beginPath(); g.moveTo(PAD, PAD+S*f); g.lineTo(PAD+S, PAD+S*f); g.stroke();
+  });
+  g.strokeStyle="rgba(150,64,90,.30)";
+  g.beginPath(); g.moveTo(PAD+S/2, PAD); g.lineTo(PAD+S/2, PAD+S); g.stroke();
+  g.beginPath(); g.moveTo(PAD, PAD+S/2); g.lineTo(PAD+S, PAD+S/2); g.stroke();
+  g.restore();
+}
+function drawSnapLines(g){
+  if (snapLine.x==null && snapLine.y==null) return;
+  var S=view.size;
+  g.save();
+  g.beginPath(); g.rect(PAD,PAD,S,S); g.clip();
+  g.strokeStyle="#B85572"; g.lineWidth=1;
+  if (snapLine.x!=null){
+    var gx=PAD+snapLine.x*view.scale;
+    g.beginPath(); g.moveTo(gx, PAD); g.lineTo(gx, PAD+S); g.stroke();
+  }
+  if (snapLine.y!=null){
+    var gy=PAD+snapLine.y*view.scale;
+    g.beginPath(); g.moveTo(PAD, gy); g.lineTo(PAD+S, gy); g.stroke();
+  }
+  g.restore();
+}
+function drawRuler(g){
+  var S=view.size;
+  g.save();
+  g.strokeStyle="rgba(138,104,117,.55)"; g.lineWidth=1;
+  g.fillStyle="rgba(138,104,117,.95)";
+  g.font="9px system-ui, sans-serif";
+  for (var i=0;i<=10;i++){
+    var t=PAD+S*i/10, len=(i%5===0)?9:5;
+    g.beginPath(); g.moveTo(Math.round(t)+.5, PAD-3); g.lineTo(Math.round(t)+.5, PAD-3-len); g.stroke();
+    g.beginPath(); g.moveTo(PAD-3, Math.round(t)+.5); g.lineTo(PAD-3-len, Math.round(t)+.5); g.stroke();
+  }
+  var half=lenNum(state.tile/2), full=lenNum(state.tile);
+  g.textAlign="center"; g.textBaseline="alphabetic";
+  g.fillText("0", PAD, PAD-16);
+  g.fillText(half, PAD+S/2, PAD-16);
+  g.fillText(full+" "+unitName(), PAD+S, PAD-16);
+  g.textAlign="right"; g.textBaseline="middle";
+  g.fillText(half, PAD-16, PAD+S/2);
+  g.fillText(full, PAD-16, PAD+S);
+  g.restore();
+}
+
+function drawSelection(g, m, sc){
+  var c = cornersOf(m).map(function(p){ return {x:PAD+p.x*sc, y:PAD+p.y*sc}; });
+  g.save();
+  g.strokeStyle="#B85572"; g.lineWidth=1.3; g.setLineDash([5,4]);
+  g.beginPath(); g.moveTo(c[0].x,c[0].y);
+  for (var i=1;i<4;i++) g.lineTo(c[i].x,c[i].y);
+  g.closePath(); g.stroke(); g.setLineDash([]);
+  var hs = handlesOf(m, sc);
+  var r = {x:PAD+hs[4].p.x*sc, y:PAD+hs[4].p.y*sc};
+  var top = {x:(c[0].x+c[1].x)/2, y:(c[0].y+c[1].y)/2};
+  g.beginPath(); g.moveTo(top.x,top.y); g.lineTo(r.x,r.y); g.stroke();
+  for (var j=0;j<hs.length;j++){
+    var x=PAD+hs[j].p.x*sc, y=PAD+hs[j].p.y*sc;
+    g.beginPath(); g.arc(x,y, hs[j].k==="rot"?HANDLE+1:HANDLE, 0, Math.PI*2);
+    g.fillStyle = hs[j].k==="rot" ? "#B85572" : "#FFFFFF";
+    g.fill(); g.strokeStyle="#B85572"; g.lineWidth=1.5; g.stroke();
+  }
+  var cx=PAD+m.x*sc, cy=PAD+m.y*sc;
+  g.strokeStyle="#B85572"; g.lineWidth=1;
+  g.beginPath(); g.moveTo(cx-6,cy); g.lineTo(cx+6,cy); g.moveTo(cx,cy-6); g.lineTo(cx,cy+6); g.stroke();
+  g.beginPath(); g.arc(cx,cy,2.2,0,Math.PI*2); g.fillStyle="#B85572"; g.fill();
+  g.restore();
+}
+
+function tagBox(m, sc){
+  octx.font="11px system-ui, sans-serif";
+  var txt = "X " + (m.x/state.tile*100).toFixed(1) + "%  Y " + (m.y/state.tile*100).toFixed(1) + "%";
+  var w = octx.measureText(txt).width + 14, h = 20;
+  return { txt:txt, w:w, h:h,
+           x: clamp(PAD + m.x*sc + 12, 2, view.css - w - 2),
+           y: clamp(PAD + m.y*sc - h - 10, 2, view.css - h - 2) };
+}
+function drawPositionTag(g, m, box){
+  if (!box) box = tagBox(m, view.scale);
+  g.save();
+  g.font="11px system-ui, sans-serif";
+  g.fillStyle="rgba(255,251,252,.94)";
+  g.strokeStyle="rgba(184,85,114,.5)"; g.lineWidth=1;
+  if (g.roundRect){ g.beginPath(); g.roundRect(box.x,box.y,box.w,box.h,6); g.fill(); g.stroke(); }
+  else { g.fillRect(box.x,box.y,box.w,box.h); g.strokeRect(box.x,box.y,box.w,box.h); }
+  g.fillStyle="#37232C"; g.textBaseline="middle";
+  g.fillText(box.txt, box.x+7, box.y+box.h/2+.5);
+  g.restore();
+}
+
+/* ---------- preview (throttled while editing) ---------- */
+var pvTimer=null, pvDirty=false, pvOne=null;
+function schedulePreview(){
+  pvDirty=true;
+  if (drag || pending) return;   // hold off until the gesture ends
+  if (pvTimer) return;
+  pvTimer=setTimeout(function(){
+    pvTimer=null;
+    if (pvDirty){ pvDirty=false; drawPreview(); }
+  }, 16);
+}
+function drawPreview(){
+  var css=view.css, dpr=view.dpr, n=state.repeat;
+  var unit=Math.max(24, Math.floor(css*dpr/n));
+  if (pv.width!==unit*n){ pv.width=pv.height=unit*n; }
+  if (pv.style.width!==css+"px"){ pv.style.width=css+"px"; pv.style.height=css+"px"; }
+  if (!pvOne || pvOne.width!==unit){ pvOne=document.createElement("canvas"); pvOne.width=pvOne.height=unit; }
+  var g=pvOne.getContext("2d");
+  g.setTransform(1,0,0,1,0,0); g.clearRect(0,0,unit,unit);
+  paintTile(g, unit/state.tile, 0, 0, {checker:false, template:false, k:1});
+  pctx.setTransform(1,0,0,1,0,0);
+  pctx.clearRect(0,0,pv.width,pv.height);
+  if (state.transparent){ pctx.fillStyle=checkerPattern(pctx); pctx.fillRect(0,0,pv.width,pv.height); }
+  for (var c=-1;c<=n;c++) for (var r=-1;r<=n;r++){
+    var x = c*unit + (state.mode==="brick" ? r*unit/2 : 0);
+    var y = r*unit + (state.mode==="halfdrop" ? c*unit/2 : 0);
+    pctx.drawImage(pvOne, Math.round(x), Math.round(y));
+  }
+}
+
+/* ---------- snapping ---------- */
+function guideLines(){
+  var T=state.tile;
+  return [0, T*0.25, T/3, T*0.5, T*2/3, T*0.75, T];
+}
+function applySnap(x, y, self, off){
+  var res={x:x, y:y, gx:null, gy:null};
+  if (!state.guides || off) return res;
+  var th=7/view.scale, i, d, best, bd, cand;
+  cand=guideLines();
+  state.motifs.forEach(function(m){ if (m!==self) cand.push(m.x); });
+  best=null; bd=th;
+  for (i=0;i<cand.length;i++){ d=Math.abs(x-cand[i]); if (d<bd){ bd=d; best=cand[i]; } }
+  if (best!=null){ res.x=best; res.gx=best; }
+  cand=guideLines();
+  state.motifs.forEach(function(m){ if (m!==self) cand.push(m.y); });
+  best=null; bd=th;
+  for (i=0;i<cand.length;i++){ d=Math.abs(y-cand[i]); if (d<bd){ bd=d; best=cand[i]; } }
+  if (best!=null){ res.y=best; res.gy=best; }
+  return res;
+}
+
+/* ---------- history ---------- */
+var FIELDS = ["id","lib","x","y","w","h","rot","skx","sky","fx","fy","alpha","hue","sat","bri"];
+function snapshot(){
+  history.push(JSON.stringify(state.motifs.map(function(m){
+    var o={}; FIELDS.forEach(function(f){ o[f]=m[f]; }); return o;
+  })));
+  if (history.length>60) history.shift();
+  $("undo").disabled=false;
+}
+function undo(){
+  if (!history.length) return;
+  state.motifs = JSON.parse(history.pop()).map(function(d){
+    var l=library[d.lib]; if (!l) return null;
+    d.img=l.img; d._cache=null; d._key=null; d._mips=null; d._t=null; d._tkey=null;
+    return d;
+  }).filter(Boolean);
+  if (!byId(state.sel)) state.sel=null;
+  $("undo").disabled = history.length===0;
+  dropLayer(); render(); syncInspector(); say("Stepped back one change.");
+}
+
+/* ---------- library ---------- */
+function loadImage(src){
+  return new Promise(function(res, rej){
+    var img=new Image();
+    img.onload=function(){ res(img); };
+    img.onerror=rej;
+    img.src=src;
+  });
+}
+function renderLibrary(){
+  var ul=$("lib"); ul.innerHTML="";
+  library.forEach(function(l,i){
+    var li=document.createElement("li");
+    var b=document.createElement("button");
+    b.className="thumb"; b.title="Place on canvas: " + l.name;
+    var im=document.createElement("img"); im.src=l.thumb; im.alt=l.name;
+    b.appendChild(im);
+    b.onclick=function(){ placeMotif(i); };
+    var k=document.createElement("button");
+    k.className="kill"; k.textContent="×"; k.title="Remove from the library";
+    k.onclick=function(e){ e.stopPropagation(); removeFromLibrary(i); };
+    li.appendChild(b); li.appendChild(k); ul.appendChild(li);
+  });
+  $("libCount").textContent = library.length + " files";
+}
+function removeFromLibrary(i){
+  snapshot();
+  state.motifs = state.motifs.filter(function(m){ return m.lib!==i; });
+  state.motifs.forEach(function(m){ if (m.lib>i) m.lib-=1; });
+  library.splice(i,1);
+  if (!byId(state.sel)) state.sel=null;
+  renderLibrary(); dropLayer(); render(); syncInspector();
+}
+function placeMotif(i, x, y){
+  var l=library[i]; if (!l) return;
+  snapshot();
+  var k = state.tile*0.22 / Math.max(IW(l.img), IH(l.img));
+  var m = {
+    id:uid++, lib:i, img:l.img,
+    x: x==null ? state.tile*(.3+Math.random()*.4) : x,
+    y: y==null ? state.tile*(.3+Math.random()*.4) : y,
+    w:IW(l.img)*k, h:IH(l.img)*k,
+    rot:0, skx:0, sky:0, fx:false, fy:false,
+    alpha:1, hue:0, sat:100, bri:100
+  };
+  state.motifs.push(m); state.sel=m.id;
+  dropLayer(); render(); syncInspector();
+  say("Drag a motif over an edge and it reappears on the opposite side.");
+}
+function intake(files){
+  var list = Array.prototype.filter.call(files, function(f){ return /^image\//.test(f.type); });
+  if (!list.length){ say("Please choose an image file."); return; }
+  Promise.all(list.map(function(f){
+    var url=URL.createObjectURL(f);
+    return loadImage(url).then(function(img){
+      var src=prepareSource(img);
+      URL.revokeObjectURL(url);
+      library.push({img:src, name:f.name, thumb:makeThumb(src)});
+      return library.length-1;
+    }).catch(function(){ URL.revokeObjectURL(url); return -1; });
+  })).then(function(idx){
+    renderLibrary();
+    idx.filter(function(i){ return i>=0; }).forEach(function(i){ placeMotif(i); });
+  });
+}
+
+/* ---------- pointer ---------- */
+function toTile(e){
+  var r=cv.getBoundingClientRect();
+  return {
+    x: ((e.clientX-r.left)*(view.css/r.width) - PAD)/view.scale,
+    y: ((e.clientY-r.top)*(view.css/r.height) - PAD)/view.scale
+  };
+}
+cv.addEventListener("pointerdown", function(e){
+  var p=toTile(e), m=sel();
+  if (m){
+    var hs=handlesOf(m, view.scale);
+    for (var i=0;i<hs.length;i++){
+      var dx=(p.x-hs[i].p.x)*view.scale, dy=(p.y-hs[i].p.y)*view.scale;
+      var tol = (e.pointerType==="mouse") ? 11 : GRAB;
+      if (dx*dx+dy*dy <= tol*tol){
+        snapshot(); cv.setPointerCapture(e.pointerId); buildLayer(m);
+        drag = hs[i].k==="rot"
+          ? {mode:"rotate", m:m, a0:Math.atan2(p.y-m.y,p.x-m.x), r0:m.rot}
+          : {mode:"resize", m:m, d0:Math.hypot(p.x-m.x,p.y-m.y)||1, w0:m.w, h0:m.h};
+        return;
+      }
+    }
+  }
+  for (var j=state.motifs.length-1;j>=0;j--){
+    if (hitMotif(state.motifs[j], p.x, p.y)){
+      var hit=state.motifs[j];
+      snapshot(); state.sel=hit.id; cv.setPointerCapture(e.pointerId); buildLayer(hit);
+      drag={mode:"move", m:hit, sx:hit.x, sy:hit.y, px:p.x, py:p.y, moved:false};
+      render(); syncInspector(); return;
+    }
+  }
+  state.sel=null; dropLayer(); render(); syncInspector();
+});
+cv.addEventListener("pointermove", function(e){
+  var p=toTile(e);
+  if (!drag){
+    var over=false;
+    for (var j=state.motifs.length-1;j>=0;j--){ if (hitMotif(state.motifs[j],p.x,p.y)){ over=true; break; } }
+    cv.style.cursor = over ? "grab" : "default";
+    return;
+  }
+  var m=drag.m;
+  if (drag.mode==="move"){
+    var w0=wrapPoint(drag.sx+(p.x-drag.px), drag.sy+(p.y-drag.py));
+    var s=applySnap(w0.x, w0.y, m, e.altKey);
+    var w=wrapPoint(s.x, s.y);
+    m.x=w.x; m.y=w.y;
+    snapLine.x=s.gx; snapLine.y=s.gy;
+    drag.moved=true; cv.style.cursor="grabbing";
+  } else if (drag.mode==="resize"){
+    var k=Math.hypot(p.x-m.x,p.y-m.y)/drag.d0;
+    m.w=Math.max(MIN_MOTIF, drag.w0*k); m.h=Math.max(MIN_MOTIF, drag.h0*k);
+  } else {
+    var a=Math.atan2(p.y-m.y,p.x-m.x)-drag.a0+drag.r0;
+    if (e.shiftKey){ var st=Math.PI/12; a=Math.round(a/st)*st; }
+    m.rot=a;
+  }
+  invalidate(); inspDirty=true;
+});
+function endDrag(){
+  if (!drag) return;
+  if (drag.mode==="move" && drag.moved) say("Whatever crossed the edge is still connected on the other side.");
+  drag=null; snapLine.x=null; snapLine.y=null;
+  dropLayer(); cv.style.cursor="default"; render(); syncInspector();
+}
+cv.addEventListener("pointerup", endDrag);
+cv.addEventListener("pointercancel", endDrag);
+
+document.addEventListener("keydown", function(e){
+  if (/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
+  if ((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==="z"){ e.preventDefault(); undo(); return; }
+  var m=sel(); if (!m) return;
+  if (e.key==="Delete"||e.key==="Backspace"){ e.preventDefault(); removeMotif(); return; }
+  var step=e.shiftKey ? state.tile*.02 : state.tile*.004, moved=true, nx=m.x, ny=m.y;
+  if (e.key==="ArrowLeft") nx-=step;
+  else if (e.key==="ArrowRight") nx+=step;
+  else if (e.key==="ArrowUp") ny-=step;
+  else if (e.key==="ArrowDown") ny+=step;
+  else moved=false;
+  if (moved){
+    e.preventDefault();
+    if (hotId!==m.id) buildLayer(m);
+    var w=wrapPoint(nx,ny); m.x=w.x; m.y=w.y;
+    invalidate(); inspDirty=true;
+  }
+});
+document.addEventListener("keyup", function(e){
+  if (/^(Arrow)/.test(e.key) && !drag && !pending) { dropLayer(); invalidate(); }
+});
+
+/* ---------- inspector ---------- */
+function live(el, apply){
+  el.addEventListener("pointerdown", function(){
+    if (!pending){ snapshot(); pending=true; buildLayer(sel()); }
+  });
+  el.addEventListener("keydown", function(){
+    if (!pending){ snapshot(); pending=true; buildLayer(sel()); }
+  });
+  el.addEventListener("input", function(){
+    var m=sel();
+    if (m){ apply(m, parseFloat(el.value)); invalidate(); inspDirty=true; }
+  });
+  el.addEventListener("change", function(){ pending=false; dropLayer(); invalidate(); });
+}
+live($("posX"), function(m,v){ m.x=v/100*state.tile; });
+live($("posY"), function(m,v){ m.y=v/100*state.tile; });
+live($("sz"),   function(m,v){ var r=m.h/m.w; m.w=Math.max(MIN_MOTIF, IW(m.img)*v/100); m.h=m.w*r; });
+live($("rotR"), function(m,v){ m.rot=v*Math.PI/180; });
+live($("skx"),  function(m,v){ m.skx=v*Math.PI/180; });
+live($("sky"),  function(m,v){ m.sky=v*Math.PI/180; });
+live($("hue"),  function(m,v){ m.hue=v; });
+live($("sat"),  function(m,v){ m.sat=v; });
+live($("bri"),  function(m,v){ m.bri=v; });
+live($("alpha"),function(m,v){ m.alpha=v/100; });
+
+function edit(fn){
+  var m=sel(); if(!m) return;
+  snapshot(); fn(m); dropLayer(); render(); syncInspector();
+}
+$("toCenter").onclick=function(){ edit(function(m){ m.x=state.tile/2; m.y=state.tile/2; }); };
+$("flipX").onclick=function(){ edit(function(m){ m.fx=!m.fx; }); };
+$("flipY").onclick=function(){ edit(function(m){ m.fy=!m.fy; }); };
+$("resetShape").onclick=function(){ edit(function(m){ m.rot=0; m.skx=0; m.sky=0; m.fx=false; m.fy=false; }); };
+$("resetColor").onclick=function(){ edit(function(m){ m.hue=0; m.sat=100; m.bri=100; m.alpha=1; }); };
+$("front").onclick=function(){ edit(function(m){ reorder(m,1); }); };
+$("back").onclick =function(){ edit(function(m){ reorder(m,-1); }); };
+$("dupe").onclick =function(){
+  var m=sel(); if(!m) return; snapshot();
+  var w=wrapPoint(m.x+state.tile*.08, m.y+state.tile*.08);
+  var c=Object.assign({}, m, {id:uid++, x:w.x, y:w.y, _cache:null, _key:null, _mips:null, _t:null, _tkey:null});
+  state.motifs.push(c); state.sel=c.id;
+  dropLayer(); render(); syncInspector();
+};
+$("del").onclick=removeMotif;
+
+function reorder(m,dir){
+  var i=state.motifs.indexOf(m); state.motifs.splice(i,1);
+  if (dir>0) state.motifs.push(m); else state.motifs.unshift(m);
+}
+function removeMotif(){
+  var m=sel(); if(!m) return;
+  snapshot(); state.motifs.splice(state.motifs.indexOf(m),1); state.sel=null;
+  dropLayer(); render(); syncInspector(); say("Motif deleted.");
+}
+function setSlider(id, val, label, suffix, digits){
+  var el=$(id);
+  if (document.activeElement!==el && el.value!=val) el.value=val;
+  var txt=(digits ? val.toFixed(digits) : Math.round(val)) + suffix;
+  var lb=$(label);
+  if (lb.textContent!==txt) lb.textContent=txt;
+}
+function syncInspector(){
+  var m=sel();
+  $("inspEmpty").hidden = !!m;
+  $("inspBody").hidden = !m;
+  var nm = m ? (library[m.lib] ? library[m.lib].name : "") : "";
+  if ($("selName").textContent!==nm) $("selName").textContent=nm;
+  if (!m) return;
+  setSlider("posX", clamp(m.x/state.tile*100, 0, 100), "posXVal", "%", 1);
+  setSlider("posY", clamp(m.y/state.tile*100, 0, 100), "posYVal", "%", 1);
+  if (drag && drag.mode==="move") return;   // nothing else changes while sliding a motif around
+  setSlider("sz",   clamp(m.w/IW(m.img)*100, 3, 250), "szVal", "%");
+  setSlider("rotR", clamp(m.rot*180/Math.PI, -180, 180), "rotVal", "°");
+  setSlider("skx",  clamp(m.skx*180/Math.PI, -60, 60), "skxVal", "°");
+  setSlider("sky",  clamp(m.sky*180/Math.PI, -60, 60), "skyVal", "°");
+  setSlider("hue",  m.hue, "hueVal", "°");
+  setSlider("sat",  m.sat, "satVal", "%");
+  setSlider("bri",  m.bri, "briVal", "%");
+  setSlider("alpha", m.alpha*100, "alphaVal", "%");
+  var cmTxt = lenNum(m.w) + " × " + lenNum(m.h) + " " + unitName();
+  if ($("sizeCm").textContent!==cmTxt) $("sizeCm").textContent=cmTxt;
+}
+
+/* ---------- panels ---------- */
+$("drop").onclick=function(){ $("fileInput").click(); };
+$("drop").onkeydown=function(e){ if (e.key==="Enter"||e.key===" "){ e.preventDefault(); $("fileInput").click(); } };
+$("fileInput").onchange=function(){ intake(this.files); this.value=""; };
+["dragenter","dragover"].forEach(function(t){ document.addEventListener(t,function(e){ e.preventDefault(); $("drop").classList.add("over"); }); });
+["dragleave","drop"].forEach(function(t){ document.addEventListener(t,function(e){ e.preventDefault(); $("drop").classList.remove("over"); }); });
+document.addEventListener("drop", function(e){ if (e.dataTransfer && e.dataTransfer.files.length) intake(e.dataTransfer.files); });
+
+$("guides").onchange=function(){ state.guides=this.checked; dropLayer(); render(); };
+$("perf").onchange=function(){
+  perfOn=this.checked; perfAcc=0; perfN=0; perfAt=0;
+  say(perfOn ? "Move a motif and the time each frame takes shows up here." : "Meter off.");
+};
+
+$("tileSize").onchange=function(){
+  var k=parseInt(this.value,10)/state.tile;
+  snapshot(); state.tile=parseInt(this.value,10);
+  state.motifs.forEach(function(m){ m.x*=k; m.y*=k; m.w*=k; m.h*=k; });
+  $("canvasMeta").textContent=state.tile+" × "+state.tile+" px";
+  fitCanvas(); syncInspector();
+};
+var MODE_NOTE = {
+  grid:"Straight rows and columns. The most basic repeat.",
+  halfdrop:"Every other column drops by half. Vertical lines break up and the motifs scatter more naturally.",
+  brick:"Every other row shifts by half, like brickwork, giving a horizontal flow."
+};
+var MODE_LABEL = { grid:"Tiled as a grid", halfdrop:"Tiled as a half-drop", brick:"Tiled as a brick" };
+var MODE_EXPORT = {
+  grid:"Lay it out in a plain grid and no seam will show.",
+  halfdrop:"Lay it out as a half-drop, dropping every other column by half.",
+  brick:"Lay it out as a brick, shifting every other row by half."
+};
+function applyMode(){
+  $("modeNote").textContent=MODE_NOTE[state.mode];
+  $("previewLabel").textContent=MODE_LABEL[state.mode];
+  var plain = (state.mode==="grid");
+  $("exportUnit").style.opacity = plain ? .5 : 1;
+  document.querySelectorAll("#exportUnit button").forEach(function(b){ b.disabled = plain; });
+  if (plain){
+    $("exportNote").textContent="Saves as one tile. Lay it out in a plain grid and no seam will show.";
+  } else if (state.unit==="grid"){
+    var w=(state.mode==="halfdrop") ? state.tile*2+" × "+state.tile : state.tile+" × "+state.tile*2;
+    $("exportNote").textContent="Saves at "+w+" px. Lay it out in a plain grid with no offset — made for software with no half-drop setting, such as Photoshop or Spoonflower.";
+  } else {
+    $("exportNote").textContent="Saves as one tile. "+MODE_EXPORT[state.mode];
+  }
+}
+document.querySelectorAll("#exportUnit button").forEach(function(b){
+  b.onclick=function(){
+    document.querySelectorAll("#exportUnit button").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    state.unit=b.dataset.unit; applyMode();
+  };
+});
+document.querySelectorAll("#unitPick button").forEach(function(b){
+  b.onclick=function(){
+    document.querySelectorAll("#unitPick button").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    state.units=b.dataset.u; render(); syncInspector();
+  };
+});
+document.querySelectorAll("#repeatMode button").forEach(function(b){
+  b.onclick=function(){
+    document.querySelectorAll("#repeatMode button").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    state.mode=b.dataset.mode; applyMode(); dropLayer(); render();
+    say("Layout changed. Check the preview on the right.");
+  };
+});
+$("bgColor").oninput=function(){ state.bg=this.value; dropLayer(); invalidate(); };
+$("bgTransparent").onchange=function(){ state.transparent=this.checked; $("bgColor").disabled=this.checked; dropLayer(); render(); };
+$("tplAdd").onclick=function(){ $("tplInput").click(); };
+$("tplInput").onchange=function(){
+  var f=this.files[0]; this.value=""; if(!f) return;
+  loadImage(URL.createObjectURL(f)).then(function(img){
+    state.template=prepareSource(img); $("tplClear").disabled=false; $("tplOpacityField").hidden=false;
+    dropLayer(); render(); say("Underlay added. Use it as a guide for placement.");
+  });
+};
+$("tplClear").onclick=function(){ state.template=null; this.disabled=true; $("tplOpacityField").hidden=true; dropLayer(); render(); };
+$("tplOpacity").oninput=function(){ state.tplOpacity=this.value/100; $("tplOpacityVal").textContent=this.value+"%"; dropLayer(); invalidate(); };
+$("undo").onclick=undo;
+$("clearAll").onclick=function(){
+  if (!state.motifs.length) return;
+  snapshot(); state.motifs=[]; state.sel=null; dropLayer(); render(); syncInspector();
+  say("Canvas cleared. You can still undo this.");
+};
+$("scatter").onclick=function(){
+  if (!state.motifs.length){ say("Add a motif first."); return; }
+  snapshot();
+  var n=state.motifs.length, cols=Math.ceil(Math.sqrt(n)), cell=state.tile/cols;
+  var order=state.motifs.map(function(_,i){ return i; }).sort(function(){ return Math.random()-.5; });
+  state.motifs.forEach(function(m,i){
+    var s=order[i], r=Math.floor(s/cols), c=s%cols;
+    var w=wrapPoint(cell*(c+.15+Math.random()*.7), cell*(r+.15+Math.random()*.7));
+    m.x=w.x; m.y=w.y; m.rot=(Math.random()-.5)*.9;
+  });
+  dropLayer(); render(); syncInspector(); say("Spread out evenly. Nudge anything you like by hand.");
+};
+document.querySelectorAll("[data-rep]").forEach(function(b){
+  b.onclick=function(){
+    document.querySelectorAll("[data-rep]").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    state.repeat=parseInt(b.dataset.rep,10); drawPreview();
+  };
+});
+document.querySelectorAll("[data-fmt]").forEach(function(b){
+  b.onclick=function(){
+    document.querySelectorAll("[data-fmt]").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    state.format=b.dataset.fmt;
+  };
+});
+
+/* ---------- export ---------- */
+function download(blob, name){
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a"); a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
+}
+$("exportBtn").onclick=function(){
+  if (!state.motifs.length){ say("Place a motif first."); return; }
+  var T=state.tile;
+  var base=document.createElement("canvas"); base.width=base.height=T;
+  var bg=base.getContext("2d");
+  bg.imageSmoothingQuality="high";
+  paintTile(bg, 1, 0, 0, {checker:false, template:false, k:1});
+
+  // a half-drop tile repeats plainly as a 2×1 block, brick as a 1×2 block
+  var out=base, w=T, h=T;
+  if (state.unit==="grid" && state.mode!=="grid"){
+    if (state.mode==="halfdrop"){ w=T*2; h=T; } else { w=T; h=T*2; }
+    out=document.createElement("canvas"); out.width=w; out.height=h;
+    var g=out.getContext("2d");
+    g.drawImage(base,0,0);
+    if (state.mode==="halfdrop"){ g.drawImage(base,T,-T/2); g.drawImage(base,T,T/2); }
+    else { g.drawImage(base,-T/2,T); g.drawImage(base,T/2,T); }
+  }
+  if (state.format==="jpeg" && state.transparent){
+    var j=document.createElement("canvas"); j.width=w; j.height=h;
+    var jg=j.getContext("2d");
+    jg.fillStyle="#FFFFFF"; jg.fillRect(0,0,w,h); jg.drawImage(out,0,0);
+    out=j;
+  }
+  var tail = (w!==h) ? "grid-"+w+"x"+h : state.mode+"-"+T+"px";
+  var name="pattern-"+tail+"."+(state.format==="jpeg"?"jpg":"png");
+  out.toBlob(function(b){
+               if (!b){ say("This device could not export at that size. Try a smaller tile resolution."); return; }
+               download(b, name); say(name+" saved.");
+             },
+             state.format==="jpeg"?"image/jpeg":"image/png", .92);
+};
+
+/* ---------- boot ---------- */
+window.addEventListener("resize", fitCanvas);
+if (!FILTER_OK){
+  $("filterNote").hidden=false;
+  ["hue","sat","bri"].forEach(function(id){ $(id).disabled=true; });
+}
+if (COARSE) say("Drag motifs with your finger. Crossing the edges is fine.");
+applyMode(); fitCanvas(); syncInspector();
+})();
+</script>
+</body>
+</html>
