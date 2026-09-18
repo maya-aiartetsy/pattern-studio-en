@@ -280,7 +280,6 @@
             <label class="field"><span>Saturation <b id="satVal">100%</b></span><input type="range" id="sat" min="0" max="220" value="100"></label>
             <label class="field"><span>Brightness <b id="briVal">100%</b></span><input type="range" id="bri" min="30" max="180" value="100"></label>
             <label class="field"><span>Opacity <b id="alphaVal">100%</b></span><input type="range" id="alpha" min="10" max="100" value="100"></label>
-            <p class="hint" id="filterNote" hidden style="margin-top:10px">This browser cannot adjust hue, saturation or brightness. Opacity still works.</p>
           </div>
 
           <div class="group">
@@ -478,17 +477,51 @@ function makeThumb(src){
 }
 
 /* ---------- bitmap caches ---------- */
+// Safari has no canvas filter (WebKit bug 198416), so the same colour maths
+// is done by hand there. The matrix follows the CSS filter spec exactly.
+function colorMatrix(hue, sat, bri){
+  var a=hue*Math.PI/180, c=Math.cos(a), s=Math.sin(a), v=sat;
+  var H=[0.213+c*0.787-s*0.213, 0.715-c*0.715-s*0.715, 0.072-c*0.072+s*0.928,
+         0.213-c*0.213+s*0.143, 0.715+c*0.285+s*0.140, 0.072-c*0.072-s*0.283,
+         0.213-c*0.213-s*0.787, 0.715-c*0.715+s*0.715, 0.072+c*0.928+s*0.072];
+  var S=[0.213+0.787*v, 0.715-0.715*v, 0.072-0.072*v,
+         0.213-0.213*v, 0.715+0.285*v, 0.072-0.072*v,
+         0.213-0.213*v, 0.715-0.715*v, 0.072+0.928*v];
+  var M=new Float64Array(9), r, k;
+  for (r=0;r<3;r++) for (k=0;k<3;k++)
+    M[r*3+k] = (S[r*3]*H[k] + S[r*3+1]*H[3+k] + S[r*3+2]*H[6+k]) * bri;
+  return M;
+}
 function tinted(m){
-  var key = m.hue + "|" + m.sat + "|" + m.bri;
+  // while a colour slider is being dragged, Safari works on a small copy
+  var lo = (!FILTER_OK && pending);
+  var key = m.hue + "|" + m.sat + "|" + m.bri + (lo ? "|lo" : "");
   if (m._key === key && m._cache) return m._cache;
   if (m.hue===0 && m.sat===100 && m.bri===100){ m._cache=m.img; m._key=key; return m.img; }
   var w=IW(m.img), h=IH(m.img);
-  var k=Math.min(1, 1600/Math.max(w,h));
+  var cap = FILTER_OK ? 1600 : (lo ? 560 : 1400);
+  var k=Math.min(1, cap/Math.max(w,h));
   var c=document.createElement("canvas");
   c.width=Math.max(1,Math.round(w*k)); c.height=Math.max(1,Math.round(h*k));
   var g=c.getContext("2d");
-  g.filter="hue-rotate("+m.hue+"deg) saturate("+m.sat+"%) brightness("+m.bri+"%)";
-  g.drawImage(m.img,0,0,c.width,c.height);
+  if (FILTER_OK){
+    g.filter="hue-rotate("+m.hue+"deg) saturate("+m.sat+"%) brightness("+m.bri+"%)";
+    g.drawImage(m.img,0,0,c.width,c.height);
+  } else {
+    g.drawImage(m.img,0,0,c.width,c.height);
+    try{
+      var img=g.getImageData(0,0,c.width,c.height), p=img.data;
+      var M=colorMatrix(m.hue, m.sat/100, m.bri/100);
+      for (var i=0;i<p.length;i+=4){
+        if (p[i+3]===0) continue;                      // skip transparent pixels
+        var R=p[i], G=p[i+1], B=p[i+2];
+        p[i]   = M[0]*R + M[1]*G + M[2]*B;
+        p[i+1] = M[3]*R + M[4]*G + M[5]*B;
+        p[i+2] = M[6]*R + M[7]*G + M[8]*B;
+      }
+      g.putImageData(img,0,0);
+    } catch(err){ /* leave the motif untouched if the pixels cannot be read */ }
+  }
   m._cache=c; m._key=key; return c;
 }
 // a pre-shrunk copy near the size actually shown on screen, so the
@@ -1234,10 +1267,6 @@ $("exportBtn").onclick=function(){
 
 /* ---------- boot ---------- */
 window.addEventListener("resize", fitCanvas);
-if (!FILTER_OK){
-  $("filterNote").hidden=false;
-  ["hue","sat","bri"].forEach(function(id){ $(id).disabled=true; });
-}
 if (COARSE) say("Drag motifs with your finger. Crossing the edges is fine.");
 applyMode(); fitCanvas(); syncInspector();
 })();
